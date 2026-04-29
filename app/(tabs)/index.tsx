@@ -26,6 +26,12 @@ export default function App() {
       >
         Go to Sing In
       </Link>
+
+      <Link href="/subscription">Spotify subscription</Link>
+      <Link href={{
+        pathname: "/subscription/[id]",
+        params: {id: "clause"}
+      }}>Claude Max Subscription</Link>
     </View>
   );
 }
