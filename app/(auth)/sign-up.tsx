@@ -91,6 +91,7 @@ export default function SignUp() {
       if (error) {
         setLocalErrors({
           global: error.longMessage || error.message || "Verification failed. Please try again.",
+          code: "Invalid code",
         });
         return;
       }
@@ -102,7 +103,10 @@ export default function SignUp() {
           },
         });
       } else {
-        setLocalErrors({ global: "Verification incomplete. Please try again." });
+        setLocalErrors({
+          global: "Verification incomplete. Please try again.",
+          code: "Incomplete",
+        });
       }
     } catch (err: any) {
       setLocalErrors({
@@ -111,6 +115,7 @@ export default function SignUp() {
           err?.errors?.[0]?.message ||
           err?.message ||
           "An unexpected error occurred during verification.",
+        code: "Error",
       });
     }
   };

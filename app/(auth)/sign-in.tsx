@@ -19,6 +19,7 @@ export default function SignIn() {
   const [emailAddress, setEmailAddress] = useState("");
   const [password, setPassword] = useState("");
   const [localErrors, setLocalErrors] = useState<{ [key: string]: string }>({});
+  const [needsMfa, setNeedsMfa] = useState(false);
 
   const isLoading = fetchStatus === "fetching";
 
@@ -47,7 +48,9 @@ export default function SignIn() {
           },
         });
       } else if (signIn.status === "needs_second_factor") {
-        setLocalErrors({ global: "Multi-factor authentication is required." });
+        // No second-factor screen exists in this app yet.
+        // Gate the user with a clear UI instead of silently dead-ending them.
+        setNeedsMfa(true);
       }
     } catch (err: any) {
       setLocalErrors({
@@ -64,6 +67,47 @@ export default function SignIn() {
   const passwordHasError = !!(clerkErrors?.fields?.password);
   const globalError = localErrors.global || clerkErrors?.global?.[0]?.message;
 
+  // ── MFA Gating Screen ────────────────────────────────────────────────────
+  if (needsMfa) {
+    return (
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        className="flex-1 bg-background"
+      >
+        <View className="flex-1 items-center justify-center px-6">
+          {/* Icon */}
+          <View className="size-16 rounded-2xl bg-accent items-center justify-center mb-6">
+            <Text className="text-4xl">🔐</Text>
+          </View>
+
+          {/* Heading */}
+          <Text className="text-2xl font-sans-bold text-primary text-center mb-3">
+            Two-Factor Authentication Required
+          </Text>
+
+          {/* Body */}
+          <Text className="text-sm font-sans-medium text-muted-foreground text-center mb-8 leading-6">
+            Your account has multi-factor authentication enabled.{"\n"}This feature isn't supported in the app yet.{"\n\n"}Please sign in via the web portal or contact support for help accessing your account.
+          </Text>
+
+          {/* Back button */}
+          <TouchableOpacity
+            className="auth-button w-full"
+            onPress={() => {
+              setNeedsMfa(false);
+              setPassword("");
+              setLocalErrors({});
+            }}
+            activeOpacity={0.8}
+          >
+            <Text className="auth-button-text">← Back to Sign In</Text>
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
+    );
+  }
+
+  // ── Normal Sign-In Screen ─────────────────────────────────────────────────
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
