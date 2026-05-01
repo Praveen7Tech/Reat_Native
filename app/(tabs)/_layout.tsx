@@ -9,7 +9,12 @@ import { useSafeAreaInsets } from "react-native-safe-area-context"
 const tabBar = components.tabBar;
 
 const TabLayout = () =>{ 
-    const insets = useSafeAreaInsets()
+    const insets = useSafeAreaInsets();
+
+    interface TabIconProps {
+        focused: boolean;
+        icon: any;
+    }
 
     const TabIcon = ({focused, icon}: TabIconProps)=>{
         return(
