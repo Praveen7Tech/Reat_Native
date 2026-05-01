@@ -1,11 +1,9 @@
 import "@/global.css";
 import { ClerkProvider, ClerkLoaded } from "@clerk/expo";
+import { tokenCache } from "@clerk/expo/token-cache";
 import { useFonts } from "expo-font";
 import { SplashScreen, Slot } from "expo-router";
-import * as SecureStore from "expo-secure-store";
 import { useEffect } from "react";
-
-import { Platform } from "react-native";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -15,26 +13,7 @@ if (!publishableKey) {
   throw new Error("Add your Clerk Publishable Key to the .env file");
 }
 
-const createTokenCache = () => {
-  return {
-    async getToken(key: string) {
-      try {
-        return await SecureStore.getItemAsync(key);
-      } catch (err) {
-        return null;
-      }
-    },
-    async saveToken(key: string, value: string) {
-      try {
-        return await SecureStore.setItemAsync(key, value);
-      } catch (err) {
-        return;
-      }
-    },
-  };
-};
 
-const tokenCache = Platform.OS !== "web" ? createTokenCache() : undefined;
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
