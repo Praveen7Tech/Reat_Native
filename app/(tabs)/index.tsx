@@ -74,7 +74,7 @@ export default function App() {
         keyExtractor={(item) => item.id}
         ItemSeparatorComponent={()=> <View className="h-4" />}
         showsVerticalScrollIndicator={false}
-        ListEmptyComponent={<Text>No subscriptions yest..!</Text>}
+        ListEmptyComponent={<Text>No subscriptions yet.</Text>}
         contentContainerClassName="pb-20"
       />
     </SafeAreaView>
