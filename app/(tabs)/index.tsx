@@ -8,12 +8,14 @@ import "@/global.css";
 import { formatCurrency } from "@/lib/utils";
 import dayjs from "dayjs";
 import { styled } from "nativewind";
+import { useState } from "react";
 import { FlatList, Image, Text, View } from "react-native";
 import { SafeAreaView as RNSafeAreaView } from "react-native-safe-area-context";
 
 const SafeAreaView = styled(RNSafeAreaView)
 
 export default function App() {
+  const [expandedSubscriptionId, setExpandedSubscriptionId ] = useState<string | null>(null)
   return (
     <SafeAreaView className="flex-1 bg-background p-5">
 
@@ -31,7 +33,7 @@ export default function App() {
             </View>
 
             <View className="home-balance-card">
-              <Text>Balance</Text>
+              <Text className="home-balance-label">Balance</Text>
               <View className="home-balance-ror">
                 <Text className="home-balance-amount">
                   {formatCurrency(HOME_BALANCE.amount)}
@@ -62,11 +64,18 @@ export default function App() {
         )}
         data={HOME_SUBSCRIPTIONS}
         renderItem={({ item }) => (
-          <SubscriptionCard {...item} />
+          <SubscriptionCard 
+              {...item} 
+              expanded={expandedSubscriptionId === item.id}
+              onPress={()=> setExpandedSubscriptionId((currentId)=> (currentId === item.id ? null  : item.id))}
+           />
         )}
+        extraData={expandedSubscriptionId}
         keyExtractor={(item) => item.id}
         ItemSeparatorComponent={()=> <View className="h-4" />}
         showsVerticalScrollIndicator={false}
+        ListEmptyComponent={<Text>No subscriptions yest..!</Text>}
+        contentContainerClassName="pb-20"
       />
     </SafeAreaView>
   );

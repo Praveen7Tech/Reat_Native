@@ -1,12 +1,13 @@
 import { formatCurrency } from '@/lib/utils'
 import clsx from "clsx"
+import dayjs from 'dayjs'
 import React from 'react'
-import { Image, Text, View } from 'react-native'
+import { Image, Pressable, Text, View } from 'react-native'
 
 
-const SubscriptionCard = ({name,price, currency,icon,billing,color, category}: SubscriptionCardProps) => {
+const SubscriptionCard = ({name,price, currency,icon,billing,color, category,onPress,expanded,paymentMethod,plan,startDate,renewalDate,status}: SubscriptionCardProps) => {
   return (
-    <View className={clsx('sub-card', 'bg-card')} style={color ? {backgroundColor: color} : undefined}>
+    <Pressable onPress={onPress} className={clsx('sub-card', expanded ? 'sub-card-expanded' : 'bg-card')} style={!expanded && color ? {backgroundColor: color} : undefined}>
       <View className='sub-head'>
         <View className='sub-main'>
             <Image source={icon} className='sub-icon'/>
@@ -23,7 +24,54 @@ const SubscriptionCard = ({name,price, currency,icon,billing,color, category}: S
             <Text className='sub-billing'>{billing}</Text>
         </View>
       </View>
-    </View>
+
+      {expanded && (
+        <View className='sub-bdy'>
+          <View className='sub-details'>
+            <View className='sub-row'>
+              <View className='sub-row-copy'>
+                <Text className='sub-label'>Payment : </Text>
+                <Text className='sub-value' numberOfLines={1} ellipsizeMode='tail'>
+                  {paymentMethod?.trim()}
+                </Text>
+              </View>
+            </View>
+            <View className='sub-row'>
+              <View className='sub-row-copy'>
+                <Text className='sub-label'>Category : </Text>
+                <Text className='sub-value' numberOfLines={1} ellipsizeMode='tail'>
+                  {category?.trim() || plan?.trim()}
+                </Text>
+              </View>
+            </View>
+            <View className='sub-row'>
+              <View className='sub-row-copy'>
+                <Text className='sub-label'>Started : </Text>
+                <Text className='sub-value' numberOfLines={1} ellipsizeMode='tail'>
+                  {startDate ? dayjs(startDate).format("DD/MM/YY") : ''}
+                </Text>
+              </View>
+            </View>
+            <View className='sub-row'>
+              <View className='sub-row-copy'>
+                <Text className='sub-label'>Renewal Date : </Text>
+                <Text className='sub-value' numberOfLines={1} ellipsizeMode='tail'>
+                  {renewalDate ? dayjs(renewalDate).format('DD/MM') : ''}
+                </Text>
+              </View>
+            </View>
+            <View className='sub-row'>
+              <View className='sub-row-copy'>
+                <Text className='sub-label'>Status : </Text>
+                <Text className='sub-value' numberOfLines={1} ellipsizeMode='tail'>
+                  {status}
+                </Text>
+              </View>
+            </View>
+          </View>
+        </View>
+      )}
+    </Pressable>
   )
 }
 
